@@ -11,6 +11,9 @@ python = "^3.14"
 
 [tool.poetry.group.lint.dependencies]
 flake8 = "^7.3.0"
+mypy = "^1.19.1"
+black = "^26.1.0"
+isort = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]
