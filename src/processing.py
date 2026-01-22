@@ -7,10 +7,10 @@ def filter_by_state(list_dict: list[dict], state: str = "EXECUTED") -> list:
     return filtered_list
 
 
-def sort_by_date(list_dict: list[dict]) -> list:
+def sort_by_date(list_dict: list[dict], reduce: bool) -> list:
     """Функция, которая принимает список словарей и необязательный параметр, задающий порядок сортировки
     (по умолчанию — убывание) и возвращает новый список, отсортированный по дате"""
-    sorted_list = sorted(list_dict, key=lambda x: x["date"], reverse=True)
+    sorted_list = sorted(list_dict, key=lambda x: x["date"], reverse=reduce)
     return sorted_list
 
 
@@ -21,4 +21,5 @@ if __name__ == "__main__":
         {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
         {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
     ]
-    print(sort_by_date(i))
+    n = True
+    print(sort_by_date(i,n))
