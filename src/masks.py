@@ -29,7 +29,7 @@ def get_mask_account(number: str) -> str:
     """
     number_clean = number.replace(" ", "")
     if number_clean == "":
-        return "отсутствует номер карты"
+        return "отсутствует номер счета"
     elif len(number_clean) != 20:
         return "количество цифр не равно 20"
     elif not number_clean.isdigit():
