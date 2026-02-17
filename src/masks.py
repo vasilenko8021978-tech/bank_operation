@@ -5,13 +5,13 @@ def get_mask_card_number(number: str) -> str:
     :return: строку в формате ХХХХ ХХ** **** ХХХХ
     """
 
-    number_clean=number.replace(" ", "")
-    if number_clean=="":
+    number_clean = number.replace(" ", "")
+    if number_clean == "":
         return "отсутствует номер карты"
     elif len(number_clean) != 16:
-        return 'количество цифр не равно 16'
+        return "количество цифр не равно 16"
     elif not number_clean.isdigit():
-        return 'номер должен быть только из цифр'
+        return "номер должен быть только из цифр"
     res_l = []
     conv_str = number_clean
     count_stars = "*" * (len(conv_str) - 10)
@@ -28,11 +28,11 @@ def get_mask_account(number: str) -> str:
     :return: строку в формате **ХХХХ
     """
     number_clean = number.replace(" ", "")
-    if number_clean=="":
+    if number_clean == "":
         return "отсутствует номер карты"
     elif len(number_clean) != 20:
-        return 'количество цифр не равно 20'
+        return "количество цифр не равно 20"
     elif not number_clean.isdigit():
-        return 'номер должен быть только из цифр'
+        return "номер должен быть только из цифр"
     conv_str = number_clean
     return f"**{conv_str[-4:]}"

@@ -9,9 +9,9 @@ def mask_account_card(number: str) -> str:
         return "Ошибка: пустая строка"
     parts = number.split()
 
-    #Проверка наличия номера
+    # Проверка наличия номера
     if len(parts) < 2:
-      return "Ошибка: отсутствует название карты или счета"
+        return "Ошибка: отсутствует название карты или счета"
 
     # Проверка, что номер состоит только из цифр
     if not parts[-1].isdigit():
@@ -27,7 +27,6 @@ def mask_account_card(number: str) -> str:
         if not clean_name.isalpha() or len(clean_name) < 4:
             return "Неправильно введено название счета(карты)"
 
-
     return f"{card_name} {card_mask}"
 
 
@@ -40,11 +39,11 @@ def get_date(date: str) -> str:
         return "Некорректный формат даты"
 
     # Минимальная длина и проверка разделителей "-"
-    if len(date) < 10 or date[4] != '-' or date[7] != '-':
+    if len(date) < 10 or date[4] != "-" or date[7] != "-":
         return "Некорректный формат даты"
 
     # Минимальная длина и проверка разделителей '-'
-    if len(date) < 10 or date[4] != '-' or date[7] != '-':
+    if len(date) < 10 or date[4] != "-" or date[7] != "-":
         return "Некорректный формат даты"
 
     try:
