@@ -92,6 +92,11 @@ test_get_date_wrong_separator_at_position_7,test_get_date_index_error_in_try_blo
 8. Функция test_sort_by_date_invalid_date_format производит тест функции с некорректными датами
 9. Функция test_sort_by_date_parametrized проверяет правильность сортировки
 
+
+Покрытие тестами 96 процентов
+```bash
+pytest 
+```
 ### Документация
 
 Более подробную документацию по каждой функции можно найти в `docstrings` и комментариях внутри исходного кода.
