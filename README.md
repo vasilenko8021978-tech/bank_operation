@@ -39,7 +39,7 @@
 Функция фильтрует словари по заданному значению для ключа `state`  
  6. `sort_by_date(list_dict, reduce)`  
 Функция возвращает по умолчанию отсортированный по убыванию список по дате
-## Тесты
+### Тесты
 
 ## Фикстуры для filter_by_state
 
@@ -91,6 +91,7 @@ test_get_date_wrong_separator_at_position_7,test_get_date_index_error_in_try_blo
 7. Функция test_sort_by_date_missing_date_key производит тест обработки ключа "date"
 8. Функция test_sort_by_date_invalid_date_format производит тест функции с некорректными датами
 9. Функция test_sort_by_date_parametrized проверяет правильность сортировки
+
 ### Документация
 
 Более подробную документацию по каждой функции можно найти в `docstrings` и комментариях внутри исходного кода.
