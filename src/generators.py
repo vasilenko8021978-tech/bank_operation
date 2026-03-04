@@ -1,15 +1,23 @@
-from typing import List, Dict, Any, Iterator, Tuple
+from typing import Any, Dict, Iterator, List
 
 
-def filter_by_currency(transactions: List[Dict[str, Any]],currency_code: str) -> Iterator[Dict[str, Any]]:
-    """ Функция, принимает на вход список словарей, представляющих транзакции
+def filter_by_currency(transactions: List[Dict[str, Any]], currency_code: str) -> Iterator[Dict[str, Any]]:
+    """Функция, принимает на вход список словарей, представляющих транзакции
     и возвращает итератор, который поочередно выдает транзакции, где валюта
     операции соответствует заданной"""
     for transaction in transactions:
         try:
-            if ("operationAmont" in transaction and "currency" in transaction["operationAmont"] and transaction["operationAmont"]
-                    and "code" in transaction["operationAmont"]["currency"]):
-                if transaction["operationAmont"]["currency"]["code"].upper == currency_code.upper():
+            if (
+                    "operationAmount" in transaction
+                    and "currency" in transaction["operationAmount"]
+                    and "code" in transaction["operationAmount"]["currency"]
+            ):
+                # Сравниваем код валюты (регистронезависимо и без пробелов)
+                tx_currency = transaction["operationAmount"]["currency"]["code"].strip()
+                if not tx_currency:
+                    continue
+
+                if tx_currency.upper() == currency_code.upper():
                     yield transaction
         except (KeyError, TypeError):
             continue
@@ -19,12 +27,13 @@ def transaction_description(transactions: List[Dict[str, Any]]) -> Iterator[Dict
     """Генератор, который возвращает описание каждой транзакции по очереди"""
     for transaction in transactions:
         try:
-            #Извлекаем описание транзакции
-            description = transaction.get["description","Без описания"]
+            # Извлекаем описание транзакции
+            description = transaction.get("description", "Без описания")
             yield description
         except (KeyError, TypeError, AttributeError):
-            #Пропускаем транзакции с некорректной структурой
+            # Пропускаем транзакции с некорректной структурой
             continue
+
 
 def card_number_generator(start: int, end: int) -> Iterator[str]:
     """
@@ -46,7 +55,7 @@ def card_number_generator(start: int, end: int) -> Iterator[str]:
         raise ValueError("Начальное значение не может быть больше конечного")
 
     # Генерация номеров карт
-    for number in range(start, end+1):
+    for number in range(start, end + 1):
         # Форматируем номер: заполняем нулями до 16 цифр
         card_str = str(number).zfill(16)
 

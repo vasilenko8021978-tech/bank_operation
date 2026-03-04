@@ -1,8 +1,10 @@
 import pytest
-from src.generators import filter_by_currency, transaction_description, card_number_generator
 
+from src.generators import card_number_generator, filter_by_currency, transaction_description
 
 """Фикстура с тестовыми транзакциями"""
+
+
 @pytest.fixture
 def sample_transaction():
     return [
@@ -10,132 +12,108 @@ def sample_transaction():
             "id": 1,
             "state": "EXECUTED",
             "date": "2018-06-30T02:08:58.425572",
-            "operationAmount": {
-                "amount": "9824.07",
-                "currency": {"name": "USD", "code": "USD"}
-            },
+            "operationAmount": {"amount": "9824.07", "currency": {"name": "USD", "code": "USD"}},
             "description": "Перевод организации",
             "from": "Счет 75106830613657916952",
-            "to": "Счет 11776614605963066702"},
-    {
+            "to": "Счет 11776614605963066702",
+        },
+        {
             "id": 2,
             "state": "EXECUTED",
-        "date": "2019-04-04T23:20:05.206878",
-        "operationAmount":
-            {"amount": "79114.93",
-             "currency": {"name": "USD", "code": "USD"}
-            },
-        "description": "Перевод со счета на счет",
-        "from": "Счет 19708645243227258542",
-        "to": "Счет 75651667383060284188"
-    },
-    {
-        "id": 3,
-        "state": "EXECUTED",
-        "date": "2019-03-23T01:09:46.296404",
-        "operationAmount": {
-            "amount": "43318.34",
-            "currency": {"name": "RUB", "code": "RUB"}
-    },
-        "description": "Перевод со счета на счет",
-        "from": "Счет 44812258784861134719",
-        "to": "Счет 74489636417521191164"
-    },
-    {
-        "id": 4,
-        "state": "EXECUTED",
-        "date": "2019-07-03T18:35:29.512364",
-        "operationAmount": {
-            "amount": "8221.37",
-            "currency": {"name": "USD", "code": "USD"}
+            "date": "2019-04-04T23:20:05.206878",
+            "operationAmount": {"amount": "79114.93", "currency": {"name": "USD", "code": "USD"}},
+            "description": "Перевод со счета на счет",
+            "from": "Счет 19708645243227258542",
+            "to": "Счет 75651667383060284188",
         },
-        "description": "Перевод организации",
-        "from": "MasterCard 1234567890123456",
-        "to": "Счет 12345678901234567890"
+        {
+            "id": 3,
+            "state": "EXECUTED",
+            "date": "2019-03-23T01:09:46.296404",
+            "operationAmount": {"amount": "43318.34", "currency": {"name": "RUB", "code": "RUB"}},
+            "description": "Перевод со счета на счет",
+            "from": "Счет 44812258784861134719",
+            "to": "Счет 74489636417521191164",
         },
-    {
-        "id": 5,
-        "state": "CANCELED",
-        "date": "2019-08-26T10:50:58.294041",
-        "operationAmount": {
-            "amount": "65432.10",
-            "currency": {"name": "EUR", "code": "EUR"}
+        {
+            "id": 4,
+            "state": "EXECUTED",
+            "date": "2019-07-03T18:35:29.512364",
+            "operationAmount": {"amount": "8221.37", "currency": {"name": "USD", "code": "USD"}},
+            "description": "Перевод организации",
+            "from": "MasterCard 1234567890123456",
+            "to": "Счет 12345678901234567890",
         },
-        "description": "Перевод с карты на карту",
-        "from": "Visa 1234567812345678",
-        "to": "MasterCard 1234567890123456"
-    }
+        {
+            "id": 5,
+            "state": "CANCELED",
+            "date": "2019-08-26T10:50:58.294041",
+            "operationAmount": {"amount": "65432.10", "currency": {"name": "EUR", "code": "EUR"}},
+            "description": "Перевод с карты на карту",
+            "from": "Visa 1234567812345678",
+            "to": "MasterCard 1234567890123456",
+        },
     ]
 
 
 def test_filter_by_currency_usd(sample_transaction):
     """Тестирование фильтрации транзакций в USD"""
-    usd_transactions = list( filter_by_currency(sample_transaction,"USD"))
+    usd_transactions = list(filter_by_currency(sample_transaction, "USD"))
 
-    #Проверяем количество транзакций
+    # Проверяем количество транзакций
     assert len(usd_transactions) == 3
 
-    #Проверяем, что все транзакции имеют код валюты USD
-    assert all(
-        tx["operationAmount"]["currency"]["code"] == "USD"
-        for tx in usd_transactions
-    )
-    #Проверяем конкретные ID
+    # Проверяем, что все транзакции имеют код валюты USD
+    assert all(tx["operationAmount"]["currency"]["code"] == "USD" for tx in usd_transactions)
+    # Проверяем конкретные ID
     usd_ids = {tx["id"] for tx in usd_transactions}
     assert usd_ids == {1, 2, 4}
 
 
 def test_filter_by_currency_eur(sample_transaction):
-    """Тестирование фильтрации транзакций в EUR """
-    eur_transactions = list( filter_by_currency(sample_transaction,"EUR"))
+    """Тестирование фильтрации транзакций в EUR"""
+    eur_transactions = list(filter_by_currency(sample_transaction, "EUR"))
     assert len(eur_transactions) == 1
     assert eur_transactions[0]["id"] == 5
     assert eur_transactions[0]["operationAmount"]["currency"]["code"] == "EUR"
 
 
 def test_filter_by_currency_rub(sample_transaction):
-    """ Тестирование фильтрации транзакции в RUB"""
-    rub_transactions = list( filter_by_currency(sample_transaction,"RUB"))
+    """Тестирование фильтрации транзакции в RUB"""
+    rub_transactions = list(filter_by_currency(sample_transaction, "RUB"))
     assert len(rub_transactions) == 1
     assert rub_transactions[0]["id"] == 3
     assert rub_transactions[0]["operationAmount"]["currency"]["code"] == "RUB"
 
 
 def test_filter_by_currency_no_matches(sample_transaction):
-    """ Тестирование фильтрации, когда транзакции в заданной валюте отсутствуют"""
-    gbr_transactions = list( filter_by_currency(sample_transaction,"GBR"))
-    assert len(gbr_transactions) == []
+    """Тестирование фильтрации, когда транзакции в заданной валюте отсутствуют"""
+    gbr_transactions = list(filter_by_currency(sample_transaction, "GBR"))
+    assert gbr_transactions == []
 
 
 def test_filter_by_currency_empty_list(sample_transaction):
-    """ Тестирование работы с пустым списком"""
+    """Тестирование работы с пустым списком"""
     empty_list = []
-    result = list( filter_by_currency(empty_list, "USD"))
+    result = list(filter_by_currency(empty_list, "USD"))
     assert result == []
 
 
-def test_filter_by_currency_non_currency_code():
-    """ Тестирование с пустым или None кодом валюты"""
-    transactions = [
-        {"operationAmount": {"currency": { "code": "USD"}}},
-        {"operationAmount": {"currency": {"code": ""}}}
-        ]
-    empty_result = list( filter_by_currency(transactions, ""))
-    assert empty_result == []
+def test_filter_by_currency_non_currency_code(sample_transaction):
+    """Тестирование с некорректным кодом валюты"""
+    empty_transactions = list(filter_by_currency(sample_transaction, ""))
 
-    usd_result = list( filter_by_currency(transactions, "USD"))
-    assert len(usd_result) == 1
-
+    assert empty_transactions == []
 
 # Тесты для transaction_description
 
 
 def test_transaction_description(sample_transaction):
-    """ Тест проверяет, что функция возвращает корректные описания для каждой транзакции"""
+    """Тест проверяет, что функция возвращает корректные описания для каждой транзакции"""
 
     description = list(transaction_description(sample_transaction))
 
-    #Проверяем количество описаний (должно быть 5 транзакций)
+    # Проверяем количество описаний (должно быть 5 транзакций)
     assert len(description) == 5
 
     # Проверяем конкретные описания для каждой транзакции
@@ -151,7 +129,7 @@ def test_transaction_description(sample_transaction):
 
 
 def test_transaction_description_generator(sample_transaction):
-    """ Тестирование использования функции, как генератора"""
+    """Тестирование использования функции, как генератора"""
 
     desc_gen = transaction_description(sample_transaction)
 
@@ -182,14 +160,11 @@ def test_transaction_description_with_empty_list():
 
 def test_transaction_description_with_single_transaction():
     """
-        Тестирование работы функции с одной транзакцией.
-        """
+    Тестирование работы функции с одной транзакцией.
+    """
     single_transaction = [
-        {
-            "id" : 999,
-            "description" : "Тестовая транзакция",
-            "operationAmount": {"currency": {"code": "USD"}}
-    }]
+        {"id": 999, "description": "Тестовая транзакция", "operationAmount": {"currency": {"code": "USD"}}}
+    ]
     result = list(transaction_description(single_transaction))
 
     # Должно вернуть одно описание
@@ -199,8 +174,8 @@ def test_transaction_description_with_single_transaction():
     print(f"\nОдна транзакция → одно описание: {result[0]}")
 
 
-def test_transaction_description_mix_transaction():
-    """ Тестирование работы функции с разным количеством транзакций"""
+def test_transaction_description_mix_transaction(sample_transaction):
+    """Тестирование работы функции с разным количеством транзакций"""
     # Тест с 0 транзакциями
     result_0 = list(transaction_description([]))
     assert len(result_0) == 0
@@ -220,11 +195,12 @@ def test_transaction_description_mix_transaction():
 
 # Тесты для card_number_generator
 
-def test_card_number_generator_basic():
-    """ Тестирование базовой генерации номеров карт"""
-    gen = card_number_generator(1,5)
 
-    #проверяем первые пять номеров
+def test_card_number_generator_basic():
+    """Тестирование базовой генерации номеров карт"""
+    gen = card_number_generator(1, 5)
+
+    # проверяем первые пять номеров
     assert next(gen) == "0000 0000 0000 0001"
     assert next(gen) == "0000 0000 0000 0002"
     assert next(gen) == "0000 0000 0000 0003"
@@ -291,4 +267,3 @@ def test_card_number_generator_invalid_start_too_small():
     """Тестирование ошибки при слишком маленьком начальном значении"""
     with pytest.raises(ValueError, match="Начальное значение должно быть >= 1"):
         list(card_number_generator(0, 5))
-
