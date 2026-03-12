@@ -105,6 +105,7 @@ def test_filter_by_currency_non_currency_code(sample_transaction):
 
     assert empty_transactions == []
 
+
 # Тесты для transaction_description
 
 

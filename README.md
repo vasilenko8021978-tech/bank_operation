@@ -1,4 +1,4 @@
-# виджет банковских операций по карте/счету
+# Виджет банковских операций по карте/счету
 
 ## Данный виджет предназначен для банковских операций клиента: 
 1. Маскировка номера карты клиента;
@@ -45,6 +45,8 @@
 Генератор, который возвращает описание каждой транзакции по очереди
 9. card_number_generator(start, end)
 Генератор, который выдает номера банковских карт в формате 'XXXX XXXX XXXX XXXX'
+10. log (filename)
+Декоратор для автоматического логирования выполнения функции.
 
 ### Тесты
 
@@ -76,18 +78,18 @@
 4. transactions_missing_date
 Фикстура задает список транзакций без ключа 'date'
 
-## блок параметризованных тестов test_masks.py
+## Блок параметризованных тестов test_masks.py
 
 1. функция test_get_mask_card_number проверяет различные ситуации с картами
 2. функция test_get_mask_account проверяет различные ситуации со счетами
 
-## блок параметризованных тестов test_widget.py
+## Блок параметризованных тестов test_widget.py
 
 1. функция test_mask_account_card проверяет различные граничные значения функции mask_account_card
 2. функции test_get_date, test_get_date_short_string, test_get_date_wrong_separator_at_position_4, 
 test_get_date_wrong_separator_at_position_7,test_get_date_index_error_in_try_block тестируют разные значения get_date
 
-## блок параметризованных тестов test_processing.py
+## Блок параметризованных тестов test_processing.py
 
 1. Функция test_filter_by_state_valid производит тест фильтрации по существующим статусам
 2. Функция test_filter_by_state_default производит тест фильтрации со значением по умолчанию (EXECUTED)  
@@ -99,6 +101,18 @@ test_get_date_wrong_separator_at_position_7,test_get_date_index_error_in_try_blo
 8. Функция test_sort_by_date_invalid_date_format производит тест функции с некорректными датами
 9. Функция test_sort_by_date_parametrized проверяет правильность сортировки
 
+## Блок параметризованных тестов test_decorators
+
+1. test_log_decorator_with_timestap_console тест логирования с временной меткой в консоль
+2. test_log_decorator_with_timestamp_file тест логирования с временной меткой в файл
+3. test_mask_account_card_with_log_decorator_success тест успешного выполнения функции mask_account_card с декоратором @log
+4. test_mask_account_card_with_log_decorator_card_number тест маскирования номера карты с декоратором
+5. test_mask_account_card_with_log_decorator_account тест маскирования номера счёта с декоратором
+6. test_mask_account_card_with_log_decorator_empty_string тест обработки пустой строки с декоратором
+7. test_mask_account_card_with_log_decorator_invalid_format тест обработки неверного формата с декоратором
+8. test_mask_account_card_with_log_decorator_non_digit тест обработки нецифровых символов с декоратором
+9. test_mask_account_card_with_log_to_file  тест логирования в файл
+10. test_mask_account_card_with_log_decorator_and_error тест обработки ошибок функции mask_account_card с декоратором
 
 Покрытие тестами 96 процентов
 

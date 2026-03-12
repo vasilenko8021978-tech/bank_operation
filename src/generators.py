@@ -8,9 +8,9 @@ def filter_by_currency(transactions: List[Dict[str, Any]], currency_code: str) -
     for transaction in transactions:
         try:
             if (
-                    "operationAmount" in transaction
-                    and "currency" in transaction["operationAmount"]
-                    and "code" in transaction["operationAmount"]["currency"]
+                "operationAmount" in transaction
+                    and "currency" in transaction["operationAmount"] and
+                    "code" in transaction["operationAmount"]["currency"]
             ):
                 # Сравниваем код валюты (регистронезависимо и без пробелов)
                 tx_currency = transaction["operationAmount"]["currency"]["code"].strip()
