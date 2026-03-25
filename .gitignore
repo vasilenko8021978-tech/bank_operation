@@ -182,3 +182,11 @@ cython_debug/
 .cursorindexingignore
 /.idea/
 .idea/
+# Секретные файлы
+.env
+
+# Кэш и временные файлы
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
