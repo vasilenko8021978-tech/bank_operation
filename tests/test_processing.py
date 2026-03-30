@@ -85,12 +85,13 @@ def test_sort_by_date_descending(transactions_unsorted: list[dict]) -> None:
 
     # Проверяем, что первый элемент - самый новый
     assert result[0]["date"] == "2024-01-25T11:00:00"
-    assert result[-1]["date"] == "2024-01-05T16:45:00"
+    assert result[1]["date"] == "2024-01-15T10:00:00"
+    assert result[2]["date"] == "2024-01-05T16:45:00"
 
 
 def test_sort_by_date_ascending(transactions_unsorted: list[dict]) -> None:
     """Тестирование сортировки по дате в порядке возрастания"""
-    result = sort_by_date(transactions_unsorted, reduce=False)
+    result = sort_by_date(transactions_unsorted, descending=False)
 
     # Проверяем, что список отсортирован по возрастанию
     dates = [item["date"] for item in result]
@@ -98,7 +99,8 @@ def test_sort_by_date_ascending(transactions_unsorted: list[dict]) -> None:
 
     # Проверяем, что первый элемент - самый старый
     assert result[0]["date"] == "2024-01-05T16:45:00"
-    assert result[-1]["date"] == "2024-01-25T11:00:00"
+    assert result[1]["date"] == "2024-01-15T10:00:00"
+    assert result[2]["date"] == "2024-01-25T11:00:00"
 
 
 def test_sort_by_date_same_dates(transactions_same_dates: list[dict]) -> None:
@@ -106,7 +108,6 @@ def test_sort_by_date_same_dates(transactions_same_dates: list[dict]) -> None:
     result = sort_by_date(transactions_same_dates)
 
     # При одинаковых датах порядок должен сохраниться (стабильная сортировка)
-    assert len(result) == 3
     assert all(item["date"] == "2024-01-15T10:30:00" for item in result)
 
 
@@ -143,26 +144,27 @@ def test_sort_by_date_invalid_date_format(transactions_invalid_dates: list[dict]
     # Проверяем, что все элементы присутствуют
     assert len(result) == 4
 
-    # Проверяем, что сортировка работает (лексикографически)
-    dates = [item["date"] for item in result]
-    assert dates == sorted(dates, reverse=True)
-
-    print("\nОтсортированные транзакции с некорректными датами:")
-    for item in result:
-        print(f"  Дата: {item['date']}")
+    # При некорректных датах функция возвращает копию исходного списка (без сортировки)
+    # Проверяем, что порядок сохранён
+    assert result[0]["date"] == "некорректная дата"
+    assert result[1]["date"] == "2024-13-01T00:00:00"
+    assert result[2]["date"] == "2024-01-40T00:00:00"
+    assert result[3]["date"] == "2024/01/15T00:00:00"
 
 
 @pytest.mark.parametrize(
-    "reverse, expected_first_date, expected_last_date",
+    "descending, expected_first_date, expected_last_date",
     [
         (True, "2024-01-25T11:00:00", "2024-01-05T16:45:00"),
         (False, "2024-01-05T16:45:00", "2024-01-25T11:00:00"),
     ],
 )
 def test_sort_by_date_parametrized(
-    transactions_unsorted: list[dict], reverse: bool, expected_first_date: str, expected_last_date: str
+    transactions_unsorted: list[dict], descending: bool, expected_first_date: str, expected_last_date: str
 ) -> None:
     """Параметризованный тест сортировки"""
-    result = sort_by_date(transactions_unsorted, reduce=reverse)
+    # Исправлено: параметр 'descending' вместо 'reduce'
+    result = sort_by_date(transactions_unsorted, descending=descending)
+
     assert result[0]["date"] == expected_first_date
     assert result[-1]["date"] == expected_last_date

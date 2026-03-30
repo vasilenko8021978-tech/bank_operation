@@ -47,6 +47,11 @@
 Генератор, который выдает номера банковских карт в формате 'XXXX XXXX XXXX XXXX'
 10. log (filename)
 Декоратор для автоматического логирования выполнения функции.
+11. Добавлена функция clean_transaction_data и read_transactions_from_json которые принимают на вход путь до JSON-файла
+и возвращают список словарей с данными о финансовых транзакциях
+12. добавлена функция get_exchange_rate, которая получает текущий курс обмена валют с использованием Exchange Rates Data API
+13. добавлена функция convert_amount_to_rubles, которая конвертирует в рубли 
+14. добавлена функция get_transaction_amount_in_rubles  которая извлекает сумму транзакции и конвертирует в рубли
 
 ### Тесты
 
@@ -149,6 +154,98 @@ sample_transaction
 Тестирование ошибки при слишком большом конечном значении
 6. test_card_number_generator_invalid_start_too_small
 Тестирование ошибки при слишком маленьком начальном значении
+
+
+## Тесты для utils
+
+1. test_read_transactions_from_json_valid_file
+Тестирование чтения валидного JSON-файла с использованием моков
+2. test_read_transactions_from_json_nonexistent_file
+Тестирование чтения несуществующего файла
+3. test_read_transactions_from_json_empty_file
+Тестирование чтения пустого файла
+4. test_read_transactions_from_json_invalid_json
+Тестирование чтения невалидного JSON
+5. test_read_transactions_from_json_non_list_content
+Тестирование чтения файла, содержащего не список
+6. test_read_transactions_from_json_with_spaces_in_keys
+Тестирование очистки ключей и значений от пробелов (как в operations.json)
+7. test_read_transactions_from_json_io_error
+Тестирование обработки ошибки ввода-вывода
+8. test_read_transactions_from_json_real_file
+Тестирование чтения реального файла operations.json через фикстуру
+9.  test_read_transactions_from_json_executed_count
+Тестирование количества выполненных транзакций
+10. test_read_transactions_from_json_canceled_count
+Тестирование количества отменённых транзакций
+11. test_read_transactions_from_json_usd_currency
+Тестирование транзакций в валюте USD
+12. test_read_transactions_from_json_rub_currency
+Тестирование транзакций в валюте RUB
+13. test_read_transactions_from_json_with_from_field
+Тестирование транзакций с полем 'from'
+14. test_read_transactions_from_json_without_from_field
+Тестирование транзакций без поля 'from'
+15. test_integration_read_real_operations_file
+Интеграционный тест: чтение реального файла operations.json
+16. test_integration_filter_usd_transactions
+Интеграционный тест: фильтрация транзакций в USD после чтения
+17. test_integration_get_transaction_descriptions
+Интеграционный тест: получение описаний транзакций после чтения
+18. test_read_transactions_from_json_large_file
+Тестирование чтения большого файла (1000+ транзакций)
+19. test_read_transactions_from_json_special_characters
+Тестирование чтения файла со специальными символами
+20. test_read_transactions_from_json_empty_list
+Тестирование чтения файла с пустым списком
+
+## Тесты и фикстуры для external_api
+
+1. mock_env_vars
+Фикстура для мокирования переменных окружения
+2. sample_transaction_usd
+Фикстура: транзакция в USD из operations.json
+3. sample_transaction_rub
+Фикстура: транзакция в RUB из operations.json
+4. test_get_exchange_rate_success
+Тестирование успешного получения курса валют
+5. test_get_exchange_rate_api_error
+Тестирование обработки ошибки API
+6. test_get_exchange_rate_network_error
+Тестирование обработки сетевой ошибки
+7. test_get_exchange_rate_timeout
+Тестирование обработки таймаута
+8. test_get_exchange_rate_missing_api_key
+Тестирование отсутствия API ключа
+9. test_get_transaction_amount_in_rubles_usd
+Тестирование получения суммы транзакции в рублях (USD)
+10. test_get_transaction_amount_in_rubles_rub
+Тестирование получения суммы транзакции в рублях (RUB)
+11. test_get_transaction_amount_in_rubles_operationAmount_not_dict
+Тестирование обработки случая, когда operationAmount не является словарём
+12. test_get_transaction_amount_in_rubles_missing_operationAmount
+Тестирование обработки транзакции без поля operationAmount
+13. test_get_transaction_amount_in_rubles_missing_amount
+Тестирование обработки транзакции без суммы
+14. test_get_transaction_amount_in_rubles_missing_currency_code
+Тестирование обработки транзакции без кода валюты
+15. test_get_transaction_amount_in_rubles_with_spaces_in_keys
+Тестирование обработки ключей с пробелами (как в operations.json)
+16. test_convert_amount_to_rubles_rub
+Тестирование конвертации суммы в рублях (без конвертации)
+17. test_convert_amount_to_rubles_usd
+Тестирование конвертации суммы из USD в рубли
+18. test_convert_amount_to_rubles_eur
+Тестирование конвертации суммы из EUR в рубли
+19. test_convert_amount_to_rubles_rounding
+Тестирование округления результата до 2 знаков
+20. test_convert_amount_to_rubles_unsupported_currency
+Тестирование конвертации неподдерживаемой валюты
+21. test_convert_amount_to_rubles_rate_error
+Тестирование обработки ошибки получения курса
+22. test_integration_real_api
+Интеграционный тест с реальным API
+
 
 ```bash
 pytest 
