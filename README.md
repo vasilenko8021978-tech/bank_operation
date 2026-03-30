@@ -246,8 +246,13 @@ sample_transaction
 22. test_integration_real_api
 Интеграционный тест с реальным API
 
+## Прописал и добавил логгер в папку src
+
+## Добавил папку logs, в которой будут добавляться файлы логов utils и masks
+
 
 ```bash
+
 pytest 
 ```
 ### Документация
