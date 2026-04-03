@@ -1,11 +1,9 @@
-import pytest
 import os
 from unittest.mock import patch
-from src.external_api import (
-    get_exchange_rate,
-    get_transaction_amount_in_rubles,
-    ExchangeRateError
-)
+
+import pytest
+
+from src.external_api import ExchangeRateError, get_exchange_rate, get_transaction_amount_in_rubles
 
 
 @pytest.fixture

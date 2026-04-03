@@ -1,6 +1,7 @@
 import json
 import os
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 from .logger import setup_logger
 
 # Создаём отдельный объект логера для модуля utils

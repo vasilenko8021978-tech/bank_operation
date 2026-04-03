@@ -1,6 +1,8 @@
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 import pandas as pd
+
 from .logger import setup_logger
 
 # Создаём отдельный объект логера для модуля file_reader

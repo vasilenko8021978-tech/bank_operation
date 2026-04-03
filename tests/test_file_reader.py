@@ -1,5 +1,6 @@
-from unittest.mock import patch, MagicMock
-from src.file_reader import read_csv_transactions, read_excel_transactions, _build_nested_structure
+from unittest.mock import MagicMock, patch
+
+from src.file_reader import _build_nested_structure, read_csv_transactions, read_excel_transactions
 
 
 @patch('src.file_reader.pd.read_csv')
