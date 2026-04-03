@@ -57,6 +57,12 @@
 17. добавлена функция read_excel_transactions, которая считывает из Excel-файла (XLSX) и возвращает список словарей.
 18. добавлена функция _clean_data_recursive, которая рекурсивно очищает ключи и строковые значения от пробелов.
 19. добавлена функция _build_nested_structure, которая формирует вложенную структуру из плоских полей
+20. добавлена функция search_transactions_by_description в модуле search, которая ищет транзакции по описанию
+21. добавлена функция categorize_transactions которая категоризирует транзакции по заданным категориям на основе описания
+22. добавлена функция get_user_choice которая получает выбор пользователя с валидацией.
+23. добавлена функция get_transaction_amount которая извлекает сумму и валюту из транзакции
+24. добавлена функция format_transaction_date которая Форматирует дату из ISO формата в ДД.ММ.ГГГГ.
+25. добавлена функция format_transaction которая форматирует транзакцию для вывода в консоль.
 
 ### Тесты
 
@@ -269,6 +275,28 @@ test_get_date_wrong_separator_at_position_7,test_get_date_index_error_in_try_blo
 Тестирование очистки ключей от пробелов в CSV
 6. test_build_nested_structure
 Тестирование формирования вложенной структуры operationAmount
+
+
+## Блок параметризованных тестов test_search.py
+
+1. test_search_transactions_by_description_simple
+Тестирование простого поиска по описанию
+2. test_search_transactions_by_description_case_insensitive
+Тестирование поиска без учёта регистра
+3. test_search_transactions_by_description_regex
+Тестирование поиска с регулярным выражением
+4. test_search_transactions_by_description_no_match
+Тестирование поиска без совпадений
+5. test_search_transactions_by_description_invalid_regex
+Тестирование обработки невалидного регулярного выражения
+6. test_categorize_transactions_basic
+Тестирование базовой категоризации
+7. test_categorize_transactions_case_insensitive
+Тестирование категоризации без учёта регистра
+8. test_categorize_transactions_empty_categories
+Тестирование категоризации с пустым списком категорий
+9. test_categorize_transactions_no_matches
+Тестирование категоризации без совпадений
 
 ```bash
 
