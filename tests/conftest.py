@@ -1,6 +1,7 @@
-import pytest
 import json
 import os
+
+import pytest
 
 
 def clean_transaction_data(data):

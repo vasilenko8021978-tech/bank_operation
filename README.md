@@ -52,6 +52,11 @@
 12. добавлена функция get_exchange_rate, которая получает текущий курс обмена валют с использованием Exchange Rates Data API
 13. добавлена функция convert_amount_to_rubles, которая конвертирует в рубли 
 14. добавлена функция get_transaction_amount_in_rubles  которая извлекает сумму транзакции и конвертирует в рубли
+15. добавлен блок file_reader, для того чтобы реализовать считывание финансовых операций из CSV- и XLSX-файлов.
+16. добавлена функция read_csv_transactions, которая считывает из CSV-файла и возвращает список словарей.
+17. добавлена функция read_excel_transactions, которая считывает из Excel-файла (XLSX) и возвращает список словарей.
+18. добавлена функция _clean_data_recursive, которая рекурсивно очищает ключи и строковые значения от пробелов.
+19. добавлена функция _build_nested_structure, которая формирует вложенную структуру из плоских полей
 
 ### Тесты
 
@@ -115,14 +120,14 @@ test_get_date_wrong_separator_at_position_7,test_get_date_index_error_in_try_blo
 5. test_mask_account_card_with_log_decorator_account тест маскирования номера счёта с декоратором
 6. test_mask_account_card_with_log_decorator_empty_string тест обработки пустой строки с декоратором
 7. test_mask_account_card_with_log_decorator_invalid_format тест обработки неверного формата с декоратором
-8. test_mask_account_card_with_log_decorator_non_digit тест обработки нецифровых символов с декоратором
+8. test_mask_account_card_with_log_decorator_non_digit тест обработки не цифровых символов с декоратором
 9. test_mask_account_card_with_log_to_file  тест логирования в файл
 10. test_mask_account_card_with_log_decorator_and_error тест обработки ошибок функции mask_account_card с декоратором
 
 Покрытие тестами 96 процентов
 
 ## Фикстура для filter_by_currency, transaction_description
-sample_transaction
+1. sample_transaction
 Фикстура задает транзакции с обычными статусами
 
 ## Тесты для filter_by_currency
@@ -250,6 +255,20 @@ sample_transaction
 
 ## Добавил папку logs, в которой будут добавляться файлы логов utils и masks
 
+## Тесты для блока file_reader
+
+1. test_read_csv_transactions_success
+Тестирование успешного чтения CSV файла
+2. test_read_csv_transactions_file_not_found
+Тестирование обработки отсутствующего CSV файла
+3. test_read_excel_transactions_success
+Тестирование успешного чтения Excel файла
+4. test_read_excel_transactions_empty_file
+Тестирование обработки пустого Excel файла
+5. test_read_csv_transactions_with_spaces_in_keys
+Тестирование очистки ключей от пробелов в CSV
+6. test_build_nested_structure
+Тестирование формирования вложенной структуры operationAmount
 
 ```bash
 
