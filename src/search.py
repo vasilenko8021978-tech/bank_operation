@@ -1,6 +1,6 @@
 import re
-from typing import Any, Dict, List
-
+from typing import List, Dict, Any
+from collections import Counter  # ← Добавлен импорт Counter
 from .logger import setup_logger
 
 # Создаём отдельный объект логера для модуля search
@@ -55,6 +55,7 @@ def categorize_transactions(
 ) -> Dict[str, int]:
     """
     Категоризирует транзакции по заданным категориям на основе описания.
+    Использует Counter для эффективного подсчёта.
 
     :param transactions: Список транзакций
     :param categories: Список категорий для поиска в описании
@@ -63,8 +64,8 @@ def categorize_transactions(
     try:
         logger.debug(f"Начата категоризация по {len(categories)} категориям")
 
-        # Инициализируем словарь с нулевыми значениями
-        category_counts = {category: 0 for category in categories}
+        # Список найденных категорий для каждой транзакции
+        found_categories: List[str] = []
 
         for transaction in transactions:
             # Ищем ключ "description" с учётом возможных пробелов
@@ -74,16 +75,22 @@ def categorize_transactions(
                     description = str(value).strip().lower()
                     break
 
-            # Проверяем каждую категорию
+            # Проверяем каждую категорию (в порядке списка)
             for category in categories:
                 # Ищем категорию в описании (игнорируем регистр)
                 if category.lower() in description:
-                    category_counts[category] += 1
+                    found_categories.append(category)
                     logger.debug(f"Транзакция отнесена к категории '{category}': {description}")
                     break  # Одна транзакция относится только к одной категории
 
-        logger.info(f"Категоризация завершена: {category_counts}")
-        return category_counts
+        # Используем Counter для подсчёта категорий
+        category_counter = Counter(found_categories)
+
+        # Формируем результат: все категории из исходного списка с их количеством (0 если нет)
+        result = {category: category_counter.get(category, 0) for category in categories}
+
+        logger.info(f"Категоризация завершена: {result}")
+        return result
 
     except Exception as e:
         logger.error(f"Ошибка при категоризации транзакций: {e}", exc_info=True)
