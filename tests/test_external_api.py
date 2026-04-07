@@ -20,16 +20,10 @@ def sample_transaction_usd() -> dict:
         "id ": 41428829,
         "state ": "EXECUTED ",
         "date ": "2019-07-03T18:35:29.512364 ",
-        "operationAmount ": {
-            "amount ": "8221.37 ",
-            "currency ": {
-                "name ": "USD ",
-                "code ": "USD "
-            }
-        },
+        "operationAmount ": {"amount ": "8221.37 ", "currency ": {"name ": "USD ", "code ": "USD "}},
         "description ": "Перевод организации ",
         "from ": "MasterCard 7158300734726758 ",
-        "to ": "Счет 35383033474447895560 "
+        "to ": "Счет 35383033474447895560 ",
     }
 
 
@@ -40,16 +34,10 @@ def sample_transaction_rub() -> dict:
         "id ": 441945886,
         "state ": "EXECUTED ",
         "date ": "2019-08-26T10:50:58.294041 ",
-        "operationAmount ": {
-            "amount ": "31957.58 ",
-            "currency ": {
-                "name ": "руб. ",
-                "code ": "RUB "
-            }
-        },
+        "operationAmount ": {"amount ": "31957.58 ", "currency ": {"name ": "руб. ", "code ": "RUB "}},
         "description ": "Перевод организации ",
         "from ": "Maestro 1596837868705199 ",
-        "to ": "Счет 64686473678894779589 "
+        "to ": "Счет 64686473678894779589 ",
     }
 
 
@@ -57,16 +45,20 @@ def sample_transaction_rub() -> dict:
 def test_get_exchange_rate_success(mock_get, mock_env_vars) -> None:
     """Тестирование успешного получения курса валют"""
     # Настройка мока
-    mock_response = type("MockResponse", (), {
-        "json": lambda self: {
-            "success": True,
-            "timestamp": 1678901234,
-            "base": "USD",
-            "date": "2023-03-15",
-            "rates": {"RUB": 92.45}
+    mock_response = type(
+        "MockResponse",
+        (),
+        {
+            "json": lambda self: {
+                "success": True,
+                "timestamp": 1678901234,
+                "base": "USD",
+                "date": "2023-03-15",
+                "rates": {"RUB": 92.45},
+            },
+            "raise_for_status": lambda self: None,
         },
-        "raise_for_status": lambda self: None
-    })()
+    )()
     mock_get.return_value = mock_response
 
     # Вызов функции
@@ -81,15 +73,14 @@ def test_get_exchange_rate_success(mock_get, mock_env_vars) -> None:
 def test_get_exchange_rate_api_error(mock_get, mock_env_vars) -> None:
     """Тестирование обработки ошибки API"""
     # Настройка мока
-    mock_response = type("MockResponse", (), {
-        "json": lambda self: {
-            "success": False,
-            "error": {
-                "info": "Invalid API key"
-            }
+    mock_response = type(
+        "MockResponse",
+        (),
+        {
+            "json": lambda self: {"success": False, "error": {"info": "Invalid API key"}},
+            "raise_for_status": lambda self: None,
         },
-        "raise_for_status": lambda self: None
-    })()
+    )()
     mock_get.return_value = mock_response
 
     # Вызов функции и проверка исключения
@@ -102,6 +93,7 @@ def test_get_exchange_rate_network_error(mock_get, mock_env_vars) -> None:
     """Тестирование обработки сетевой ошибки"""
     # Настройка мока
     from requests.exceptions import RequestException
+
     mock_get.side_effect = RequestException("Connection error")
 
     # Вызов функции и проверка исключения
@@ -114,6 +106,7 @@ def test_get_exchange_rate_timeout(mock_get, mock_env_vars) -> None:
     """Тестирование обработки таймаута"""
     # Настройка мока
     from requests.exceptions import Timeout
+
     mock_get.side_effect = Timeout("Request timed out")
 
     # Вызов функции и проверка исключения
@@ -167,12 +160,11 @@ def test_get_transaction_amount_in_rubles_rub(mock_convert, sample_transaction_r
 def test_get_transaction_amount_in_rubles_operationAmount_not_dict(mock_convert) -> None:
     """Тестирование обработки случая, когда operationAmount не является словарём"""
     # Транзакция с operationAmount в виде строки (невалидный тип)
-    invalid_transaction = {
-        "operationAmount": "invalid_string_instead_of_dict"
-    }
+    invalid_transaction = {"operationAmount": "invalid_string_instead_of_dict"}
 
-    with pytest.raises(ValueError,
-                       match="Ошибка при обработке транзакции: Поле 'operationAmount' должно быть словарём"):
+    with pytest.raises(
+        ValueError, match="Ошибка при обработке транзакции: Поле 'operationAmount' должно быть словарём"
+    ):
         get_transaction_amount_in_rubles(invalid_transaction)
 
 
@@ -190,11 +182,7 @@ def test_get_transaction_amount_in_rubles_missing_operationAmount(mock_convert) 
 def test_get_transaction_amount_in_rubles_missing_amount(mock_convert) -> None:
     """Тестирование обработки транзакции без суммы"""
     # Транзакция без суммы в operationAmount
-    invalid_transaction = {
-        "operationAmount": {
-            "currency": {"code": "USD"}
-        }
-    }
+    invalid_transaction = {"operationAmount": {"currency": {"code": "USD"}}}
 
     with pytest.raises(ValueError, match="Ошибка при обработке транзакции: Сумма транзакции не указана"):
         get_transaction_amount_in_rubles(invalid_transaction)
@@ -204,12 +192,7 @@ def test_get_transaction_amount_in_rubles_missing_amount(mock_convert) -> None:
 def test_get_transaction_amount_in_rubles_missing_currency_code(mock_convert) -> None:
     """Тестирование обработки транзакции без кода валюты"""
     # Транзакция без кода валюты
-    invalid_transaction = {
-        "operationAmount": {
-            "amount": "100.00",
-            "currency": {"name": "USD"}
-        }
-    }
+    invalid_transaction = {"operationAmount": {"amount": "100.00", "currency": {"name": "USD"}}}
 
     with pytest.raises(ValueError, match="Ошибка при обработке транзакции: Код валюты не указан"):
         get_transaction_amount_in_rubles(invalid_transaction)
@@ -233,6 +216,7 @@ def test_convert_amount_to_rubles_rub(mock_get_rate) -> None:
     """Тестирование конвертации суммы в рублях (без конвертации)"""
     # Вызов функции
     from src.external_api import convert_amount_to_rubles
+
     result = convert_amount_to_rubles(1000.50, "RUB")
 
     # Проверки
@@ -249,6 +233,7 @@ def test_convert_amount_to_rubles_usd(mock_get_rate) -> None:
 
     # Вызов функции
     from src.external_api import convert_amount_to_rubles
+
     result = convert_amount_to_rubles(100.00, "USD")
 
     # Проверки
@@ -265,6 +250,7 @@ def test_convert_amount_to_rubles_eur(mock_get_rate) -> None:
 
     # Вызов функции
     from src.external_api import convert_amount_to_rubles
+
     result = convert_amount_to_rubles(50.00, "EUR")
 
     # Проверки
@@ -280,6 +266,7 @@ def test_convert_amount_to_rubles_rounding(mock_get_rate) -> None:
 
     # Вызов функции
     from src.external_api import convert_amount_to_rubles
+
     result = convert_amount_to_rubles(1.00, "USD")
 
     # Проверки (должно округлиться до 92.46)

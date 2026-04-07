@@ -3,11 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 
-def setup_logger(
-        name: str,
-        log_file: Optional[str] = None,
-        level: int = logging.DEBUG
-) -> logging.Logger:
+def setup_logger(name: str, log_file: Optional[str] = None, level: int = logging.DEBUG) -> logging.Logger:
     """
     Настройка логера для модуля.
 
@@ -32,13 +28,12 @@ def setup_logger(
         log_path = log_dir / f"{log_file}.log"
 
         # FileHandler с режимом 'w' для перезаписи при каждом запуске
-        file_handler = logging.FileHandler(log_path, mode='w', encoding='utf-8')
+        file_handler = logging.FileHandler(log_path, mode="w", encoding="utf-8")
         file_handler.setLevel(level)
 
         # Формат записи лога: метка времени, название модуля, уровень серьезности, сообщение
         file_formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
         )
         file_handler.setFormatter(file_formatter)
 

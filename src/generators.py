@@ -1,64 +1,49 @@
-from typing import Any, Dict, Iterator, List
+from typing import Generator
 
 
-def filter_by_currency(transactions: List[Dict[str, Any]], currency_code: str) -> Iterator[Dict[str, Any]]:
-    """Функция, принимает на вход список словарей, представляющих транзакции
-    и возвращает итератор, который поочередно выдает транзакции, где валюта
-    операции соответствует заданной"""
-    for transaction in transactions:
-        try:
-            if (
-                "operationAmount" in transaction
-                and "currency" in transaction["operationAmount"]
-                and "code" in transaction["operationAmount"]["currency"]
-            ):
-                # Сравниваем код валюты (регистронезависимо и без пробелов)
-                tx_currency = transaction["operationAmount"]["currency"]["code"].strip()
-                if not tx_currency:
-                    continue
-
-                if tx_currency.upper() == currency_code.upper():
-                    yield transaction
-        except (KeyError, TypeError):
-            continue
-
-
-def transaction_description(transactions: List[Dict[str, Any]]) -> Iterator[Dict[str, Any]]:
-    """Генератор, который возвращает описание каждой транзакции по очереди"""
-    for transaction in transactions:
-        try:
-            # Извлекаем описание транзакции
-            description = transaction.get("description", "Без описания")
-            yield description
-        except (KeyError, TypeError, AttributeError):
-            # Пропускаем транзакции с некорректной структурой
-            continue
-
-
-def card_number_generator(start: int, end: int) -> Iterator[str]:
+def transaction_generator(transactions: list) -> Generator:
     """
-    Генератор, который выдает номера банковских карт в формате 'XXXX XXXX XXXX XXXX'
-    :param start: Начальное значение диапазона (включительно)
-    :param end: Конечное значение диапазона (включительно)
-    :return: Итератор строк с номерами карт
-    :raises ValueError: Если start < 1, end > 9999999999999999 или start > end
+    Генератор для построчной обработки транзакций.
+
+    :param transactions: Список транзакций
+    :yield: Каждая транзакция по очереди
     """
-    # Проверка валидности входных данных
-    MIN_CARD_NUMBER = 1
-    MAX_CARD_NUMBER = 9999999999999999
+    for transaction in transactions:
+        yield transaction
 
-    if start < MIN_CARD_NUMBER:
-        raise ValueError(f"Начальное значение должно быть >= {MIN_CARD_NUMBER}")
-    if end > MAX_CARD_NUMBER:
-        raise ValueError(f"Конечное значение должно быть <= {MAX_CARD_NUMBER}")
-    if start > end:
-        raise ValueError("Начальное значение не может быть больше конечного")
 
-    # Генерация номеров карт
-    for number in range(start, end + 1):
-        # Форматируем номер: заполняем нулями до 16 цифр
-        card_str = str(number).zfill(16)
+def batch_generator(transactions: list, batch_size: int = 10) -> Generator:
+    """
+    Генератор для обработки транзакций пакетами.
 
-        # Форматируем в виде 'ХХХХ ХХХХ ХХХХ ХХХХ'
-        formatted = f"{card_str[:4]} {card_str[4:8]} {card_str[8:12]} {card_str[12:]}"
-        yield formatted
+    :param transactions: Список транзакций
+    :param batch_size: Размер пакета
+    :yield: Пакет транзакций
+    """
+    for i in range(0, len(transactions), batch_size):
+        yield transactions[i : i + batch_size]
+
+
+def filter_generator(transactions: list, min_amount: float = 0, max_amount: float = float("inf")) -> Generator:
+    """
+    Генератор для фильтрации транзакций по сумме.
+
+    :param transactions: Список транзакций
+    :param min_amount: Минимальная сумма
+    :param max_amount: Максимальная сумма
+    :yield: Отфильтрованные транзакции
+    """
+    for transaction in transactions:
+        # Извлекаем сумму из транзакции
+        amount = 0.0
+        if "operationAmount" in transaction:
+            op_amount = transaction["operationAmount"]
+            amount_str = op_amount.get("amount", "0")
+            try:
+                amount = float(amount_str.replace(",", "."))
+            except (ValueError, TypeError):
+                amount = 0.0
+
+        # Проверяем условия фильтрации
+        if min_amount <= amount <= max_amount:
+            yield transaction

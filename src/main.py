@@ -1,11 +1,12 @@
 import sys
-from typing import List, Dict, Any
-from .utils import read_transactions_from_json
+from typing import Any, Dict, List
+
 from .file_reader import read_csv_transactions, read_excel_transactions
-from .processing import filter_by_state, sort_by_date
-from .widget import mask_account_card
-from .search import search_transactions_by_description
 from .logger import setup_logger
+from .processing import filter_by_state, sort_by_date
+from .search import search_transactions_by_description
+from .utils import read_transactions_from_json
+from .widget import mask_account_card
 
 # Создаём отдельный объект логера для модуля main
 logger = setup_logger(__name__, log_file="main")
@@ -84,7 +85,7 @@ def format_transaction_date(date_str: str) -> str:
         date_part = date_str.split("T")[0]
         year, month, day = date_part.split("-")
         return f"{day}.{month}.{year}"
-    except :
+    except Exception:
         return date_str
 
 
@@ -191,16 +192,19 @@ def main() -> None:
     sort_choice = get_user_choice("\nПрограмма: Отсортировать операции по дате? Да/Нет\nПользователь: ", ["да", "нет"])
 
     if sort_choice == "да":
-        order_choice = get_user_choice("Программа: Отсортировать по возрастанию или по убыванию?\nПользователь: ",
-                                       ["по возрастанию", "по убыванию"])
+        order_choice = get_user_choice(
+            "Программа: Отсортировать по возрастанию или по убыванию?\nПользователь: ",
+            ["по возрастанию", "по убыванию"],
+        )
 
         descending = order_choice == "по убыванию"
         transactions = sort_by_date(transactions, descending=descending)
         print(f"Программа: Операции отсортированы {('по убыванию' if descending else 'по возрастанию')}.")
 
     # Фильтрация по рублям
-    ruble_choice = get_user_choice("\nПрограмма: Выводить только рублевые транзакции? Да/Нет\nПользователь: ",
-                                   ["да", "нет"])
+    ruble_choice = get_user_choice(
+        "\nПрограмма: Выводить только рублевые транзакции? Да/Нет\nПользователь: ", ["да", "нет"]
+    )
 
     if ruble_choice == "да":
         filtered = []
@@ -230,7 +234,8 @@ def main() -> None:
     # Поиск по описанию
     search_choice = get_user_choice(
         "\nПрограмма: Отфильтровать список транзакций по определенному слову в описании? Да/Нет\nПользователь: ",
-        ["да", "нет"])
+        ["да", "нет"],
+    )
 
     if search_choice == "да":
         search_query = input("Программа: Введите слово или регулярное выражение для поиска:\nПользователь: ").strip()
@@ -264,4 +269,3 @@ if __name__ == "__main__":
         logger.error(f"Критическая ошибка в основной программе: {e}", exc_info=True)
         print(f"\nПроизошла ошибка: {e}")
         sys.exit(1)
-

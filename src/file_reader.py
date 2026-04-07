@@ -32,11 +32,11 @@ def read_csv_transactions(file_path: str) -> List[Dict[str, Any]]:
             return []
 
         # Читаем CSV файл с помощью pandas
-        df = pd.read_csv(file_path, encoding='utf-8-sig')  # utf-8-sig для обработки BOM
+        df = pd.read_csv(file_path, encoding="utf-8-sig")  # utf-8-sig для обработки BOM
         logger.info(f"Успешно прочитано {len(df)} строк из CSV файла {file_path}")
 
         # Заменяем NaN на пустые строки
-        df = df.fillna('')
+        df = df.fillna("")
 
         transactions: List[Dict[str, Any]] = []
         for _, row in df.iterrows():
@@ -97,11 +97,11 @@ def read_excel_transactions(file_path: str) -> List[Dict[str, Any]]:
             return []
 
         # Читаем Excel файл с помощью pandas
-        df = pd.read_excel(file_path, engine='openpyxl')
+        df = pd.read_excel(file_path, engine="openpyxl")
         logger.info(f"Успешно прочитано {len(df)} строк из Excel файла {file_path}")
 
         # Заменяем NaN на пустые строки
-        df = df.fillna('')
+        df = df.fillna("")
 
         transactions: List[Dict[str, Any]] = []
         for _, row in df.iterrows():
@@ -168,9 +168,9 @@ def _build_nested_structure(transaction: Dict[str, Any]) -> Dict[str, Any]:
     result = transaction.copy()
 
     # Проверяем наличие полей для формирования вложенной структуры
-    has_amount = 'amount' in result
-    has_currency_name = 'currency_name' in result
-    has_currency_code = 'currency_code' in result
+    has_amount = "amount" in result
+    has_currency_name = "currency_name" in result
+    has_currency_code = "currency_code" in result
 
     if has_amount or has_currency_name or has_currency_code:
         # Создаем вложенную структуру
@@ -178,18 +178,18 @@ def _build_nested_structure(transaction: Dict[str, Any]) -> Dict[str, Any]:
 
         # Добавляем сумму, если есть
         if has_amount:
-            operation_amount['amount'] = result.pop('amount')
+            operation_amount["amount"] = result.pop("amount")
 
         # Добавляем валюту, если есть хотя бы одно поле валюты
         if has_currency_name or has_currency_code:
             currency: Dict[str, str] = {}
             if has_currency_name:
-                currency['name'] = result.pop('currency_name')
+                currency["name"] = result.pop("currency_name")
             if has_currency_code:
-                currency['code'] = result.pop('currency_code')
-            operation_amount['currency'] = currency
+                currency["code"] = result.pop("currency_code")
+            operation_amount["currency"] = currency
 
         # Добавляем вложенную структуру в транзакцию
-        result['operationAmount'] = operation_amount
+        result["operationAmount"] = operation_amount
 
     return result

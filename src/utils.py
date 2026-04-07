@@ -12,15 +12,14 @@ def clean_transaction_data(data: Any) -> Any:
     """
     Рекурсивно очищает ВСЕ ключи и строковые значения от пробелов.
 
-    :param data: Данные для очистки
+    :param  Данные для очистки
     :return: Очищенные данные
     """
     if isinstance(data, dict):
         cleaned_dict = {}
         for key, value in data.items():
             cleaned_key = key.strip() if isinstance(key, str) else key
-            cleaned_value = clean_transaction_data(value)
-            cleaned_dict[cleaned_key] = cleaned_value
+            cleaned_dict[cleaned_key] = clean_transaction_data(value)
         return cleaned_dict
     elif isinstance(data, list):
         return [clean_transaction_data(item) for item in data]
@@ -49,7 +48,7 @@ def read_transactions_from_json(file_path: str) -> List[Dict[str, Any]]:
             return []
 
         # Открываем и читаем файл
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             content = file.read().strip()
 
             # Проверяем, что файл не пустой
@@ -92,3 +91,29 @@ def read_transactions_from_json(file_path: str) -> List[Dict[str, Any]]:
         logger.error(f"Ошибка при чтении файла {file_path}: {e}", exc_info=True)
         print(f"Ошибка при чтении файла: {e}")
         return []
+
+
+# ===== НОВЫЕ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ VIEWS.PY =====
+
+
+def get_transactions_by_date(target_date: str) -> List[Dict[str, Any]]:
+    """
+    Возвращает транзакции за указанную дату.
+
+    :param target_date: Дата в формате 'YYYY-MM-DD'
+    :return: Список транзакций
+    """
+    all_transactions = read_transactions_from_json("data/operations.json")
+    filtered = []
+
+    for tx in all_transactions:
+        tx_date = ""
+        for key, value in tx.items():
+            if isinstance(key, str) and key.strip() == "date":
+                tx_date = str(value).strip().split("T")[0]
+                break
+
+        if tx_date == target_date:
+            filtered.append(tx)
+
+    return filtered

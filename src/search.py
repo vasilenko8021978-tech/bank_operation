@@ -1,16 +1,14 @@
 import re
-from typing import List, Dict, Any
 from collections import Counter  # ← Добавлен импорт Counter
+from typing import Any, Dict, List
+
 from .logger import setup_logger
 
 # Создаём отдельный объект логера для модуля search
 logger = setup_logger(__name__, log_file="search")
 
 
-def search_transactions_by_description(
-        transactions: List[Dict[str, Any]],
-        search_query: str
-) -> List[Dict[str, Any]]:
+def search_transactions_by_description(transactions: List[Dict[str, Any]], search_query: str) -> List[Dict[str, Any]]:
     """
     Ищет транзакции по описанию с использованием регулярных выражений.
 
@@ -49,10 +47,7 @@ def search_transactions_by_description(
         return []
 
 
-def categorize_transactions(
-        transactions: List[Dict[str, Any]],
-        categories: List[str]
-) -> Dict[str, int]:
+def categorize_transactions(transactions: List[Dict[str, Any]], categories: List[str]) -> Dict[str, int]:
     """
     Категоризирует транзакции по заданным категориям на основе описания.
     Использует Counter для эффективного подсчёта.
@@ -95,4 +90,3 @@ def categorize_transactions(
     except Exception as e:
         logger.error(f"Ошибка при категоризации транзакций: {e}", exc_info=True)
         return {category: 0 for category in categories}
-
